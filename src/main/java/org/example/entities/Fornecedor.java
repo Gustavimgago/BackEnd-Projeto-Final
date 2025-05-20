@@ -1,9 +1,14 @@
 package org.example.entities;
 
+
+import org.hibernate.validator.constraints.br.CNPJ;
+
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Entity
 public class Fornecedor implements Serializable {
@@ -13,13 +18,19 @@ public class Fornecedor implements Serializable {
     @Column(name = "FOR_ID")
     private Long forId;
 
-    @Column(name = "FOR_NOME_FANTASIA")
+    @NotBlank(message = "Nome Fantasia é obrigatório")
+    @Size(max = 100, message = "Nome Fantasia deve ter no máximo 100 caracteres")
+    @Column(name = "FOR_NOME_FANTASIA", nullable = false, length = 100)
     private String forNomeFantasia;
 
-    @Column(name = "FOR_CNPJ", unique = true, length = 14)
+    @NotBlank(message = "CNPJ é obrigatório")
+    @CNPJ(message = "CNPJ inválido")
+    @Column(name = "FOR_CNPJ", nullable = false, unique = true, length = 18)
     private String forCnpj;
 
-    @Column(name = "FOR_RAZAO_SOCIAL")
+    @NotBlank(message = "Razão Social é obrigatória")
+    @Size(max = 100, message = "Razão Social deve ter no máximo 100 caracteres")
+    @Column(name = "FOR_RAZAO_SOCIAL", nullable = false, length = 100)
     private String forRazaoSocial;
 
     public Fornecedor() {

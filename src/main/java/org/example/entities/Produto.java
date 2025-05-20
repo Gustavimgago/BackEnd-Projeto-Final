@@ -3,6 +3,9 @@ package org.example.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Produto implements Serializable {
@@ -12,30 +15,40 @@ public class Produto implements Serializable {
     @Column(name = "PRO_ID")
     private Long proId;
 
+    @NotBlank(message = "Nome é obrigatório")
+    @Size(max = 255, message = "Nome deve ter no máximo 255 caracteres")
     @Column(name = "PRO_NOME")
     private String proNome;
 
-    @Column(name = "PRO_PRECO_CUSTO", precision = 10, scale = 2)
+    @NotNull(message = "Preço de Custo é obrigatório")
+    @Column(name = "PRO_PRECO_CUSTO", precision = 10, scale = 2, nullable = false)
     private Double proPrecoCusto;
 
-    @Column(name = "PRO_PRECO_VENDA", precision = 10, scale = 2)
+    @NotNull(message = "Preço de Venda é obrigatório")
+    @Column(name = "PRO_PRECO_VENDA", precision = 10, scale = 2, nullable = false)
     private Double proPrecoVenda;
 
+    @Size(max = 500, message = "Descrição deve ter no máximo 500 caracteres")
     @Column(name = "PRO_DESCRICAO")
     private String proDescricao;
 
-    @Column(name = "PRO_QUANTIDADESTOCK")
+    @NotNull(message = "Quantidade em Estoque é obrigatória")
+    @Column(name = "PRO_QUANTIDADESTOCK", nullable = false)
     private int proQuantidadeStock;
 
+    @Size(max = 50, message = "Status deve ter no máximo 50 caracteres")
     @Column(name = "PRO_STATUS")
     private String proStatus;
 
+    @Size(max = 100, message = "Categoria deve ter no máximo 100 caracteres")
     @Column(name = "PRO_CATEGORIA")
     private String proCategoria;
 
+    @Size(max = 50, message = "Código de Barras deve ter no máximo 50 caracteres")
     @Column(name = "PRO_CODIGOBARRAS")
     private String proCodigoBarras;
 
+    @Size(max = 100, message = "Marca deve ter no máximo 100 caracteres")
     @Column(name = "PRO_MARCA")
     private String proMarca;
 

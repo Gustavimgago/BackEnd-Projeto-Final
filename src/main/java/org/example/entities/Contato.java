@@ -1,6 +1,7 @@
 package org.example.entities;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Entity
@@ -11,6 +12,7 @@ public class Contato implements Serializable {
     @Column(name = "CON_ID")
     private Long conId;
 
+    @NotBlank()
     @Column(name = "CON_CELULAR", length = 14)
     private String conCelular;
 

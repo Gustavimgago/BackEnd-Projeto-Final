@@ -1,7 +1,12 @@
 package org.example.entities;
 
+import org.hibernate.validator.constraints.br.CPF;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
+
 
 @Entity
 public class FormaPagamento  implements Serializable {
@@ -11,16 +16,22 @@ public class FormaPagamento  implements Serializable {
     @Column(name = "FPG_ID")
     private Long fpgId;
 
-    @Column(name = "FPG_DESCRICAO")
+    @NotBlank(message = "Descrição é obrigatória")
+    @Size(max = 255, message = "Descrição deve ter no máximo 255 caracteres")
+    @Column(name = "FPG_DESCRICAO", nullable = false, length = 255)
     private String fpgDescricao;
 
-    @Column(name = "FPG_TIPO")
+    @NotBlank(message = "Tipo é obrigatório")
+    @Size(max = 50, message = "Tipo deve ter no máximo 50 caracteres")
+    @Column(name = "FPG_TIPO", nullable = false, length = 50)
     private String fpgTipo;
 
-    @Column(name = "FPG_TAXA")
+    @Column(name = "FPG_TAXA", nullable = false)
     private double fpgTaxa;
 
-    @Column(name = "FPG_PARCELAMENTO")
+    @NotBlank(message = "Parcelamento é obrigatório")
+    @Size(max = 100, message = "Parcelamento deve ter no máximo 100 caracteres")
+    @Column(name = "FPG_PARCELAMENTO", nullable = false, length = 100)
     private String fpgParcelamento;
 
     public FormaPagamento() {

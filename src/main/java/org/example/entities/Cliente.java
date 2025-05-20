@@ -1,7 +1,12 @@
 package org.example.entities;
 
+import org.hibernate.validator.constraints.br.CPF;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
+
 
 @Entity
 public class Cliente implements Serializable {
@@ -11,19 +16,26 @@ public class Cliente implements Serializable {
     @Column(name = "CLI_ID")
     private Long cliId;
 
-    @Column(name = "CLI_NOME")
+    @NotBlank(message = "Nome é obrigatório")
+    @Size(max = 100, message = "Nome deve ter no máximo 100 caracteres")
+    @Column(name = "CLI_NOME", nullable = false, length = 100)
     private String cliNome;
 
-    @Column(name = "CLI_CPF", length = 11)
+    @NotBlank(message = "CPF é obrigatório")
+    @CPF(message = "CPF inválido")
+    @Column(name = "CLI_CPF",nullable = false, unique = true, length = 15)
     private String cliCpf;
 
-    @Column(name = "CLI_EMAIL")
+    @NotBlank(message = "Email é obrigatório")
+    @Column(name = "CLI_EMAIL", nullable = false)
     private String cliEmail;
 
-    @Column(name = "CLI_TELEFONE", length = 14)
+    @NotBlank(message = "Telefone é obrigatório")
+    @Column(name = "CLI_TELEFONE", nullable = false,length = 14)
     private String cliTelefone;
 
-    @Column(name = "CLI_ENDERECO")
+    @NotBlank(message = "Endereço é obrigatório")
+    @Column(name = "CLI_ENDERECO", nullable = false)
     private String cliEndereco;
 
     public Cliente() {
