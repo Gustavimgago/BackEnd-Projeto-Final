@@ -1,5 +1,7 @@
 package org.example.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -10,6 +12,11 @@ public class Endereco implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "END_ID")
     private Long endId;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "END_CLI_ID")
+    private Cliente endCliente;
 
     @Column(name = "END_RUA")
     private String endRua;
@@ -44,6 +51,14 @@ public class Endereco implements Serializable {
 
     public void setEndId(Long endId) {
         this.endId = endId;
+    }
+
+    public Cliente getEndCliente() {
+        return endCliente;
+    }
+
+    public void setEndCliente(Cliente endCliente) {
+        this.endCliente = endCliente;
     }
 
     public String getEndRua() {
@@ -85,4 +100,5 @@ public class Endereco implements Serializable {
     public void setEndEstado(String endEstado) {
         this.endEstado = endEstado;
     }
+
 }

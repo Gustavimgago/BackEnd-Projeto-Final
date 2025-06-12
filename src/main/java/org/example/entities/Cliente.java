@@ -6,6 +6,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -16,6 +18,12 @@ public class Cliente implements Serializable {
     @Column(name = "CLI_ID")
     private Long cliId;
 
+    @OneToMany(mappedBy = "endCliente", cascade = CascadeType.ALL)
+    private List<Endereco> enderecos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "conCliente", cascade = CascadeType.ALL)
+    private List<Contato> contatos = new ArrayList<>();
+
     @NotBlank(message = "Nome é obrigatório")
     @Size(max = 100, message = "Nome deve ter no máximo 100 caracteres")
     @Column(name = "CLI_NOME", nullable = false, length = 100)
@@ -23,31 +31,17 @@ public class Cliente implements Serializable {
 
     @NotBlank(message = "CPF é obrigatório")
     @CPF(message = "CPF inválido")
-    @Column(name = "CLI_CPF",nullable = false, unique = true, length = 15)
+    @Column(name = "CLI_CPF", nullable = false, unique = true, length = 15)
     private String cliCpf;
 
-    @NotBlank(message = "Email é obrigatório")
-    @Column(name = "CLI_EMAIL", nullable = false)
-    private String cliEmail;
-
-    @NotBlank(message = "Telefone é obrigatório")
-    @Column(name = "CLI_TELEFONE", nullable = false,length = 14)
-    private String cliTelefone;
-
-    @NotBlank(message = "Endereço é obrigatório")
-    @Column(name = "CLI_ENDERECO", nullable = false)
-    private String cliEndereco;
 
     public Cliente() {
     }
 
-    public Cliente(Long cliId, String cliNome, String cliCpf, String cliEmail, String cliTelefone, String cliEndereco) {
+    public Cliente(Long cliId, String cliNome, String cliCpf) {
         this.cliId = cliId;
         this.cliNome = cliNome;
         this.cliCpf = cliCpf;
-        this.cliEmail = cliEmail;
-        this.cliTelefone = cliTelefone;
-        this.cliEndereco = cliEndereco;
     }
 
     public Long getCliId() {
@@ -56,6 +50,22 @@ public class Cliente implements Serializable {
 
     public void setCliId(Long cliId) {
         this.cliId = cliId;
+    }
+
+    public List<Endereco> getEnderecos() {
+        return enderecos;
+    }
+
+    public void setEnderecos(List<Endereco> enderecos) {
+        this.enderecos = enderecos;
+    }
+
+    public List<Contato> getContatos() {
+        return contatos;
+    }
+
+    public void setContatos(List<Contato> contatos) {
+        this.contatos = contatos;
     }
 
     public String getCliNome() {
@@ -72,29 +82,5 @@ public class Cliente implements Serializable {
 
     public void setCliCpf(String cliCpf) {
         this.cliCpf = cliCpf;
-    }
-
-    public String getCliEmail() {
-        return cliEmail;
-    }
-
-    public void setCliEmail(String cliEmail) {
-        this.cliEmail = cliEmail;
-    }
-
-    public String getCliTelefone() {
-        return cliTelefone;
-    }
-
-    public void setCliTelefone(String cliTelefone) {
-        this.cliTelefone = cliTelefone;
-    }
-
-    public String getCliEndereco() {
-        return cliEndereco;
-    }
-
-    public void setCliEndereco(String cliEndereco) {
-        this.cliEndereco = cliEndereco;
     }
 }
