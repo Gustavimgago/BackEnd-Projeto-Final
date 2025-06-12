@@ -5,7 +5,9 @@ import org.example.entities.Cliente;
 import org.example.entities.Contato;
 import org.example.entities.Endereco;
 import org.example.repositories.ClienteRepository;
+import org.example.repositories.ContatoRepository;
 import org.example.repositories.EnderecoRepository;
+
 import org.example.services.exeptions.ResourceNotFoundException;
 import org.example.services.exeptions.ValueBigForAtributeException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class ClienteService {
 
     @Autowired
     private EnderecoRepository enderecoRepository;
+
+    @Autowired
+    private ContatoRepository contatoRepository;
 
     public List<Cliente> getAll(){
         return repository.findAll();
@@ -87,14 +92,10 @@ public class ClienteService {
 
     public Cliente fromDTO(ClienteDTO objDto) {
         Cliente fornec = new Cliente(null, objDto.getCliNome(), objDto.getCliCpf());
-        // Cria o endereço sem cliente na construção
         Endereco ender = new Endereco(null, objDto.getEndRua(), objDto.getEndNumero(), objDto.getEndCidade(),
                 objDto.getEndCep(), objDto.getEndEstado());
-        // Associa o cliente depois
         ender.setEndCliente(fornec);
-        // Cria o contato sem cliente na construção
         Contato contato = new Contato(null, objDto.getConCelular(), objDto.getConTelefoneComercial(), objDto.getConEmail());
-        // Associa o cliente depois
         contato.setConCliente(fornec);
         fornec.getEnderecos().add(ender);
         fornec.getContatos().add(contato);
@@ -105,23 +106,23 @@ public class ClienteService {
         ClienteDTO dto = new ClienteDTO();
 
 // Mapeie os atributos comuns entre Cliente e ClienteNewDTO
-        dto.setCliId(obj.getCliId());
-        dto.setCliNome(obj.getCliNome());
-        dto.setCliCpf(obj.getCliCpf());
+        obj.setCliId(dto.getCliId());
+        obj.setCliNome(dto.getCliNome());
+        obj.setCliCpf(dto.getCliCpf());
 
 // Atributos específicos de Endereco
         Endereco endereco = obj.getEnderecos().get(0);
-        dto.setEndRua(endereco.getEndRua());
-        dto.setEndNumero(endereco.getEndNumero());
-        dto.setEndCidade(endereco.getEndCidade());
-        dto.setEndCep(endereco.getEndCep());
-        dto.setEndEstado(endereco.getEndEstado());
+        endereco.setEndRua(dto.getEndRua());
+        endereco.setEndNumero(dto.getEndNumero());
+        endereco.setEndCidade(dto.getEndCidade());
+        endereco.setEndCep(dto.getEndCep());
+        endereco.setEndEstado(dto.getEndEstado());
 
 // Atributos específicos de Contato
         Contato contato = obj.getContatos().get(0);
-        dto.setConCelular(contato.getConCelular());
-        dto.setConTelefoneComercial(contato.getConTelefoneComercial());
-        dto.setConEmail(contato.getConEmail());
+        contato.setConCelular(dto.getConCelular());
+        contato.setConTelefoneComercial(dto.getConTelefoneComercial());
+        contato.setConEmail(dto.getConEmail());
 
         return dto;
 

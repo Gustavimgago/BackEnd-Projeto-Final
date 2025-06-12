@@ -1,4 +1,5 @@
 package org.example.DTO;
+
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.Column;
@@ -8,15 +9,14 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class ClienteDTO {
+public class FornecedorDTO {
 
-    private Long cliId;
-    private String cliNome;
-    private String cliCpf;
-    private String cliEndereco;
+    private Long forId;
+    private String forNomeFantasia;
+    private String forCnpj;
+    private String forRazaoSocial;
+
     private String endRua;
-
-
     private String endNumero;
     private String endCidade;
     private String endCep;
@@ -27,44 +27,40 @@ public class ClienteDTO {
     private String conTelefoneComercial;
     private String conEmail;
 
-
-
-
-    public ClienteDTO(){
+    public FornecedorDTO() {
     }
 
 
-    public Long getCliId() {
-        return cliId;
+    public Long getForId() {
+        return forId;
     }
 
-    public void setCliId(Long cliId) {
-        this.cliId = cliId;
+    public void setForId(Long forId) {
+        this.forId = forId;
     }
 
-    public String getCliNome() {
-        return cliNome;
+    public String getForNomeFantasia() {
+        return forNomeFantasia;
     }
 
-    public void setCliNome(String cliNome) {
-        this.cliNome = cliNome;
+    public void setForNomeFantasia(String forNomeFantasia) {
+        this.forNomeFantasia = forNomeFantasia;
     }
 
-    public String getCliCpf() {
-        return cliCpf;
+    public String getForCnpj() {
+        return forCnpj;
     }
 
-    public void setCliCpf(String cliCpf) {
-        this.cliCpf = cliCpf;
+    public void setForCnpj(String forCnpj) {
+        this.forCnpj = forCnpj;
     }
 
-
-    public String getCliEndereco() {
-        return cliEndereco;
+    public String getForRazaoSocial() {
+        return forRazaoSocial;
     }
 
-    public void setCliEndereco(String cliEndereco) {
-        this.cliEndereco = cliEndereco;
+    public void setForRazaoSocial(String forRazaoSocial) {
+        this.forRazaoSocial = forRazaoSocial;
     }
 
     public String getEndRua() {
