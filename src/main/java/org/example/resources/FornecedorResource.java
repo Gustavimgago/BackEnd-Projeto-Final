@@ -1,7 +1,9 @@
 package org.example.resources;
 
+import org.example.DTO.FornecedorDTO;
 import org.example.entities.Fornecedor;
 import org.example.services.FornecedorService;
+import org.example.services.exeptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,23 +32,24 @@ public class FornecedorResource {
     }
 
     @PostMapping
-    public ResponseEntity<Fornecedor> insert(@RequestBody Fornecedor fornecedor) {
-        Fornecedor createdFornecedor = fornecedorService.insert(fornecedor);
+    public ResponseEntity<Fornecedor> insert(@RequestBody FornecedorDTO fornecedorDTO) {
+        Fornecedor createdFornecedor = fornecedorService.insert(fornecedorDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdFornecedor);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Fornecedor fornecedor) {
-        if (fornecedorService.update(id, fornecedor)) {
-            return ResponseEntity.ok().build();
-        } else {
+    public ResponseEntity<Fornecedor> update(@PathVariable Long id, @RequestBody FornecedorDTO fornecedorDto) {
+        try {
+            Fornecedor updatedFornecedor = fornecedorService.update(id, fornecedorDto);
+            return ResponseEntity.ok(updatedFornecedor);
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        fornecedorService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        fornecedorService.deleteFornecedor(id);
         return ResponseEntity.noContent().build();
     }
 }

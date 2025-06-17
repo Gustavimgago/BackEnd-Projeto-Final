@@ -1,7 +1,6 @@
 package org.example.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
@@ -21,14 +20,14 @@ public class Contato implements Serializable {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "CONT_FOR_ID")
-    private Fornecedor contFornecedor;
+    @JoinColumn(name = "CON_FOR_ID")
+    private Fornecedor conFornecedor;
 
     @NotBlank()
-    @Column(name = "CON_CELULAR", length = 14)
+    @Column(name = "CON_CELULAR", length = 20)
     private String conCelular;
 
-    @Column(name = "CON_TELEFONE_COMERCIAL", length = 14)
+    @Column(name = "CON_TELEFONE_COMERCIAL", length = 20)
     private String conTelefoneComercial;
 
     @Column(length = 55, name = "CON_EMAIL")
@@ -37,8 +36,17 @@ public class Contato implements Serializable {
     public Contato() {
     }
 
-    public Contato(Long conId, String conCelular, String conTelefoneComercial, String conEmail) {
+    public Contato(Long conId, Cliente cliente ,String conCelular, String conTelefoneComercial, String conEmail) {
         this.conId = conId;
+        this.conCliente = cliente;
+        this.conCelular = conCelular;
+        this.conTelefoneComercial = conTelefoneComercial;
+        this.conEmail = conEmail;
+    }
+
+    public Contato(Long conId, Fornecedor fornecedor ,String conCelular, String conTelefoneComercial, String conEmail) {
+        this.conId = conId;
+        this.conFornecedor = fornecedor;
         this.conCelular = conCelular;
         this.conTelefoneComercial = conTelefoneComercial;
         this.conEmail = conEmail;
@@ -61,11 +69,11 @@ public class Contato implements Serializable {
     }
 
     public Fornecedor getContFornecedor() {
-        return contFornecedor;
+        return conFornecedor;
     }
 
     public void setContFornecedor(Fornecedor contFornecedor) {
-        this.contFornecedor = contFornecedor;
+        this.conFornecedor = contFornecedor;
     }
 
     public String getConCelular() {

@@ -1,8 +1,8 @@
 package org.example.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Entity
@@ -32,7 +32,7 @@ public class Endereco implements Serializable {
     @Column(name = "END_CIDADE")
     private String endCidade;
 
-    @Column(name = "END_CEP", length = 8)
+    @Column(name = "END_CEP", length = 12)
     private String endCep;
 
     @Column(name = "END_ESTADO", length = 2)
@@ -41,13 +41,25 @@ public class Endereco implements Serializable {
     public Endereco() {
     }
 
-    public Endereco(Long endId, String endRua, String endNumero, String endCidade, String endCep, String endEstado) {
-        this.endId = endId;
-        this.endRua = endRua;
-        this.endNumero = endNumero;
-        this.endCidade = endCidade;
-        this.endCep = endCep;
-        this.endEstado = endEstado;
+    public Endereco(Long id, Cliente cliente, String rua, String numero, String cidade, String cep, String estado) {
+        this.endId = id;
+        this.endCliente = cliente;
+        this.endRua = rua;
+        this.endNumero = numero;
+        this.endCidade = cidade;
+        this.endCep = cep;
+        this.endEstado = estado;
+    }
+
+    // Construtor para Fornecedor
+    public Endereco(Long id, Fornecedor fornecedor, String rua, String numero, String cidade, String cep, String estado) {
+        this.endId = id;
+        this.endFornecedor = fornecedor;
+        this.endRua = rua;
+        this.endNumero = numero;
+        this.endCidade = cidade;
+        this.endCep = cep;
+        this.endEstado = estado;
     }
 
     public Long getEndId() {

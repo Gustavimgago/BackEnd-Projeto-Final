@@ -4,10 +4,10 @@ import org.example.DTO.ClienteDTO;
 import org.example.entities.Cliente;
 import org.example.entities.Contato;
 import org.example.entities.Endereco;
+import org.example.entities.FormaPagamento;
 import org.example.repositories.ClienteRepository;
 import org.example.repositories.ContatoRepository;
 import org.example.repositories.EnderecoRepository;
-
 import org.example.services.exeptions.ResourceNotFoundException;
 import org.example.services.exeptions.ValueBigForAtributeException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,59 +30,62 @@ public class ClienteService {
     @Autowired
     private ContatoRepository contatoRepository;
 
-    public List<Cliente> getAll(){
+    public  List<Cliente> getAll(){
         return repository.findAll();
     }
 
-    public Cliente findById(Long id) {
+    public Cliente findById(Long id){
         Optional<Cliente> obj = repository.findById(id);
-        return obj.orElseThrow(() -> new ResourceNotFoundException(id));
+        return obj.orElseThrow(() -> new
+                ResourceNotFoundException(id));
     }
 
-    public Cliente insert(Cliente obj) {
-        try {
-            obj.setCliId(null);
-            obj = repository.save(obj);
-            enderecoRepository.saveAll(obj.getEnderecos());
-            return obj;
-        } catch (DataIntegrityViolationException e) {
-            throw new ValueBigForAtributeException(e.getMessage());
+    public Cliente insert(ClienteDTO obj){
+        Cliente cliente = fromDTO(obj);
+        try{
+            cliente.setCliId(null);
+            cliente = repository.save(cliente);
+            enderecoRepository.saveAll(cliente.getEnderecos());
+            contatoRepository.saveAll(cliente.getContatos());
+            return cliente;
+        }catch (DataIntegrityViolationException e){
+            throw  new ValueBigForAtributeException(e.getMessage());
         }
-
     }
 
-    public Cliente update(Long id, ClienteDTO objDto) {
+    public  Cliente update(Long id, ClienteDTO objDto){
         try {
             Cliente entity = findById(id);
+            //Atualiza os dados do cliente
             entity.setCliNome(objDto.getCliNome());
             entity.setCliCpf(objDto.getCliCpf());
 
+            //Atualiza o endereço do cliente
             Endereco endereco = entity.getEnderecos().get(0);
-
+            //Assumindo que há apenas um endereço por cliente
             endereco.setEndRua(objDto.getEndRua());
             endereco.setEndNumero(objDto.getEndNumero());
             endereco.setEndCidade(objDto.getEndCidade());
             endereco.setEndCep(objDto.getEndCep());
             endereco.setEndEstado(objDto.getEndEstado());
 
+            //Atualiza o contato
             Contato contato = entity.getContatos().get(0);
-
+            //Assumindo que há apenas um contato por cliente
             contato.setConCelular(objDto.getConCelular());
             contato.setConTelefoneComercial(objDto.getConTelefoneComercial());
             contato.setConEmail(objDto.getConEmail());
 
+            //Salva as alterações
             repository.save(entity);
-
             return entity;
-
         }catch (DataIntegrityViolationException e){
-                throw new ValueBigForAtributeException(e.getMessage()
-                );
+            throw new ValueBigForAtributeException(e.getMessage()
+            );
         }
-
     }
 
-    public void deleteCliente(Long id) {
+    public void delete(Long id) {
         try {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
@@ -91,41 +94,42 @@ public class ClienteService {
     }
 
     public Cliente fromDTO(ClienteDTO objDto) {
-        Cliente fornec = new Cliente(null, objDto.getCliNome(), objDto.getCliCpf());
-        Endereco ender = new Endereco(null, objDto.getEndRua(), objDto.getEndNumero(), objDto.getEndCidade(),
-                objDto.getEndCep(), objDto.getEndEstado());
-        ender.setEndCliente(fornec);
-        Contato contato = new Contato(null, objDto.getConCelular(), objDto.getConTelefoneComercial(), objDto.getConEmail());
-        contato.setConCliente(fornec);
-        fornec.getEnderecos().add(ender);
-        fornec.getContatos().add(contato);
-        return fornec;
+        Cliente cliente = new Cliente(null, objDto.getCliNome(), objDto.getCliCpf());
+
+        Endereco endereco = new Endereco(null, cliente, objDto.getEndRua(), objDto.getEndNumero(),
+                objDto.getEndCidade(), objDto.getEndCep(), objDto.getEndEstado());
+
+        Contato contato = new Contato(null, cliente, objDto.getConCelular(), objDto.getConTelefoneComercial(),
+                objDto.getConEmail());
+
+        cliente.getEnderecos().add(endereco);
+        cliente.getContatos().add(contato);
+
+        return cliente;
     }
 
     public ClienteDTO toNewDTO(Cliente obj) {
         ClienteDTO dto = new ClienteDTO();
 
 // Mapeie os atributos comuns entre Cliente e ClienteNewDTO
-        obj.setCliId(dto.getCliId());
-        obj.setCliNome(dto.getCliNome());
-        obj.setCliCpf(dto.getCliCpf());
+        dto.setCliId(obj.getCliId());
+        dto.setCliNome(obj.getCliNome());
+        dto.setCliCpf(obj.getCliCpf());
 
 // Atributos específicos de Endereco
         Endereco endereco = obj.getEnderecos().get(0);
-        endereco.setEndRua(dto.getEndRua());
-        endereco.setEndNumero(dto.getEndNumero());
-        endereco.setEndCidade(dto.getEndCidade());
-        endereco.setEndCep(dto.getEndCep());
-        endereco.setEndEstado(dto.getEndEstado());
+        dto.setEndRua(endereco.getEndRua());
+        dto.setEndNumero(endereco.getEndNumero());
+        dto.setEndCidade(endereco.getEndCidade());
+        dto.setEndCep(endereco.getEndCep());
+        dto.setEndEstado(endereco.getEndEstado());
 
 // Atributos específicos de Contato
         Contato contato = obj.getContatos().get(0);
-        contato.setConCelular(dto.getConCelular());
-        contato.setConTelefoneComercial(dto.getConTelefoneComercial());
-        contato.setConEmail(dto.getConEmail());
+        dto.setConCelular(contato.getConCelular());
+        dto.setConTelefoneComercial(contato.getConTelefoneComercial());
+        dto.setConEmail(contato.getConEmail());
 
         return dto;
-
     }
-
 }
