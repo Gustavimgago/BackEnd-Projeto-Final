@@ -1,6 +1,8 @@
 package org.example.services;
 
+import org.example.entities.Fornecedor;
 import org.example.entities.Produto;
+import org.example.repositories.FornecedorRepository;
 import org.example.repositories.ProdutoRepository;
 import org.example.services.exeptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class ProdutoService {
     @Autowired
     private ProdutoRepository repository;
 
+    @Autowired
+    private FornecedorRepository fornecedorRepository;
+
     public List<Produto> getAll() {
         return repository.findAll();
     }
@@ -27,6 +32,13 @@ public class ProdutoService {
     }
 
     public Produto insert(Produto produto) {
+        if (produto.getFornecedor() == null || produto.getFornecedor().getForId() == null) {
+            throw new IllegalArgumentException("Fornecedor não pode ser nulo");
+        }
+        Fornecedor fornecedor = fornecedorRepository.findById(produto.getFornecedor().getForId())
+                .orElseThrow(() -> new ResourceNotFoundException(produto.getFornecedor().getForId()));
+
+        produto.setFornecedor(fornecedor); // Atribuindo o fornecedor encontrado
         return repository.save(produto);
     }
 
@@ -40,6 +52,11 @@ public class ProdutoService {
             produtoSistema.setProDescricao(produto.getProDescricao());
             produtoSistema.setProQuantidadeStock(produto.getProQuantidadeStock());
             produtoSistema.setProStatus(produto.getProStatus());
+
+            Fornecedor fornecedor = fornecedorRepository.findById(produto.getFornecedor().getForId())
+                    .orElseThrow(() -> new ResourceNotFoundException(produto.getFornecedor().getForId()));
+            produtoSistema.setFornecedor(fornecedor);
+
             repository.save(produtoSistema);
             return true;
         }

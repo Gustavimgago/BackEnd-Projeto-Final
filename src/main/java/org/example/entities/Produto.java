@@ -1,5 +1,7 @@
 package org.example.entities;
 
+import org.example.repositories.FornecedorRepository;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -14,6 +16,10 @@ public class Produto implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PRO_ID")
     private Long proId;
+
+    @ManyToOne
+    @JoinColumn(name = "FOR_ID", nullable = false)
+    private Fornecedor fornecedor;
 
     @NotBlank(message = "Nome é obrigatório")
     @Size(max = 255, message = "Nome deve ter no máximo 255 caracteres")
@@ -61,8 +67,9 @@ public class Produto implements Serializable {
     public Produto() {
     }
 
-    public Produto(Long proId, String proNome, Double proPrecoCusto, Double proPrecoVenda, String proDescricao, int proQuantidadeStock, String proStatus, String proCategoria, String proCodigoBarras, String proMarca, LocalDateTime proDataCadastro, LocalDateTime proDataAtualizacao) {
+    public Produto(Long proId, Fornecedor fornecedor, String proNome, Double proPrecoCusto, Double proPrecoVenda, String proDescricao, int proQuantidadeStock, String proStatus, String proCategoria, String proCodigoBarras, String proMarca, LocalDateTime proDataCadastro, LocalDateTime proDataAtualizacao) {
         this.proId = proId;
+        this.fornecedor = fornecedor;
         this.proNome = proNome;
         this.proPrecoCusto = proPrecoCusto;
         this.proPrecoVenda = proPrecoVenda;
@@ -82,6 +89,14 @@ public class Produto implements Serializable {
 
     public void setProId(Long proId) {
         this.proId = proId;
+    }
+
+    public Fornecedor getFornecedor() {
+        return fornecedor;
+    }
+
+    public void setFornecedor(Fornecedor fornecedor) {
+        this.fornecedor = fornecedor;
     }
 
     public String getProNome() {
