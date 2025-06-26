@@ -13,6 +13,7 @@ public class Endereco implements Serializable {
     @Column(name = "END_ID")
     private Long endId;
 
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "END_CLI_ID")

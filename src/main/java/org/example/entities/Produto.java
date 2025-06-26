@@ -21,6 +21,7 @@ public class Produto implements Serializable {
     @JoinColumn(name = "FOR_ID", nullable = false)
     private Fornecedor fornecedor;
 
+
     @NotBlank(message = "Nome é obrigatório")
     @Size(max = 255, message = "Nome deve ter no máximo 255 caracteres")
     @Column(name = "PRO_NOME")

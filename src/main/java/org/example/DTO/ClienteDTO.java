@@ -1,22 +1,14 @@
 package org.example.DTO;
-import org.hibernate.validator.constraints.br.CPF;
-
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 public class ClienteDTO {
 
     private Long cliId;
     private String cliNome;
     private String cliCpf;
-    private String cliEndereco;
+    private String conEmail;
+
+
     private String endRua;
-
-
     private String endNumero;
     private String endCidade;
     private String endCep;
@@ -25,7 +17,6 @@ public class ClienteDTO {
 
     private String conCelular;
     private String conTelefoneComercial;
-    private String conEmail;
 
 
 
@@ -58,14 +49,14 @@ public class ClienteDTO {
         this.cliCpf = cliCpf;
     }
 
-
-    public String getCliEndereco() {
-        return cliEndereco;
+    public String getConEmail() {
+        return conEmail;
     }
 
-    public void setCliEndereco(String cliEndereco) {
-        this.cliEndereco = cliEndereco;
+    public void setConEmail(String conEmail) {
+        this.conEmail = conEmail;
     }
+
 
     public String getEndRua() {
         return endRua;
@@ -123,11 +114,4 @@ public class ClienteDTO {
         this.conTelefoneComercial = conTelefoneComercial;
     }
 
-    public String getConEmail() {
-        return conEmail;
-    }
-
-    public void setConEmail(String conEmail) {
-        this.conEmail = conEmail;
-    }
 }

@@ -2,7 +2,9 @@ package org.example.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
 @Entity
@@ -23,13 +25,16 @@ public class Contato implements Serializable {
     @JoinColumn(name = "CON_FOR_ID")
     private Fornecedor conFornecedor;
 
-    @NotBlank()
+    @NotBlank
+    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Número de celular inválido")
     @Column(name = "CON_CELULAR", length = 20)
     private String conCelular;
 
+    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Número de telefone comercial inválido")
     @Column(name = "CON_TELEFONE_COMERCIAL", length = 20)
     private String conTelefoneComercial;
 
+    @Email (message = "Email inválido")
     @Column(length = 55, name = "CON_EMAIL")
     private String conEmail;
 
