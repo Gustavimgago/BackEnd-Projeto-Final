@@ -40,6 +40,8 @@ public class ClienteResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<Cliente> update(@PathVariable Long id, @RequestBody ClienteDTO clienteDto) {
+        System.out.println("Atualizando cliente com ID: " + id);
+        System.out.println("Dados recebidos: " + clienteDto);
         try {
             Cliente updatedCliente = clienteService.update(id, clienteDto);
             return ResponseEntity.ok(updatedCliente);

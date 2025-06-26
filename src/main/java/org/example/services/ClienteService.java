@@ -15,6 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,37 +54,60 @@ public class ClienteService {
         }
     }
 
-    public  Cliente update(Long id, ClienteDTO objDto){
+    public Cliente update(Long id, ClienteDTO objDto) {
         try {
             Cliente entity = findById(id);
-            //Atualiza os dados do cliente
+
+            // Atualiza os dados do cliente
             entity.setCliNome(objDto.getCliNome());
             entity.setCliCpf(objDto.getCliCpf());
 
-            //Atualiza o endereço do cliente
-            Endereco endereco = entity.getEnderecos().get(0);
-            //Assumindo que há apenas um endereço por cliente
-            endereco.setEndRua(objDto.getEndRua());
-            endereco.setEndNumero(objDto.getEndNumero());
-            endereco.setEndCidade(objDto.getEndCidade());
-            endereco.setEndCep(objDto.getEndCep());
-            endereco.setEndEstado(objDto.getEndEstado());
+            // Atualiza o endereço do cliente
+            if (entity.getEnderecos() != null && !entity.getEnderecos().isEmpty()) {
+                Endereco endereco = entity.getEnderecos().get(0);
+                endereco.setEndRua(objDto.getEndRua());
+                endereco.setEndNumero(objDto.getEndNumero());
+                endereco.setEndCidade(objDto.getEndCidade());
+                endereco.setEndCep(objDto.getEndCep());
+                endereco.setEndEstado(objDto.getEndEstado());
+            } else {
+                // Se não houver endereços, você pode optar por adicionar um novo
+                Endereco novoEndereco = new Endereco();
+                novoEndereco.setEndRua(objDto.getEndRua());
+                novoEndereco.setEndNumero(objDto.getEndNumero());
+                novoEndereco.setEndCidade(objDto.getEndCidade());
+                novoEndereco.setEndCep(objDto.getEndCep());
+                novoEndereco.setEndEstado(objDto.getEndEstado());
+                entity.getEnderecos().add(novoEndereco);
+            }
 
-            //Atualiza o contato
-            Contato contato = entity.getContatos().get(0);
-            //Assumindo que há apenas um contato por cliente
-            contato.setConCelular(objDto.getConCelular());
-            contato.setConTelefoneComercial(objDto.getConTelefoneComercial());
-            contato.setConEmail(objDto.getConEmail());
+            // Atualiza o contato
+            if (entity.getContatos() != null && !entity.getContatos().isEmpty()) {
+                Contato contato = entity.getContatos().get(0);
+                contato.setConCelular(objDto.getConCelular());
+                contato.setConTelefoneComercial(objDto.getConTelefoneComercial());
+                contato.setConEmail(objDto.getConEmail());
+            } else {
+                // Se não houver contatos, você pode optar por adicionar um novo
+                Contato novoContato = new Contato();
+                novoContato.setConCelular(objDto.getConCelular());
+                novoContato.setConTelefoneComercial(objDto.getConTelefoneComercial());
+                novoContato.setConEmail(objDto.getConEmail());
+                entity.getContatos().add(novoContato);
+            }
 
-            //Salva as alterações
+            // Salva as alterações
             repository.save(entity);
             return entity;
-        }catch (DataIntegrityViolationException e){
-            throw new ValueBigForAtributeException(e.getMessage()
-            );
+        } catch (DataIntegrityViolationException e) {
+            throw new ValueBigForAtributeException(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException("Cliente não encontrado com ID: " + id);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao atualizar cliente: " + e.getMessage());
         }
     }
+
 
     public void delete(Long id) {
         try {
