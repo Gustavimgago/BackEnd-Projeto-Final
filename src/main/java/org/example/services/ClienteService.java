@@ -4,7 +4,7 @@ import org.example.DTO.ClienteDTO;
 import org.example.entities.Cliente;
 import org.example.entities.Contato;
 import org.example.entities.Endereco;
-import org.example.entities.FormaPagamento;
+import org.example.entities.Vendas; // Importar a entidade Venda
 import org.example.repositories.ClienteRepository;
 import org.example.repositories.ContatoRepository;
 import org.example.repositories.EnderecoRepository;
@@ -24,6 +24,9 @@ public class ClienteService {
 
     @Autowired
     private ClienteRepository repository;
+
+/*    @Autowired
+    private VendasService vendaService; // Injetar o VendaService */
 
     public List<Cliente> getAll() {
         return repository.findAll();
@@ -89,4 +92,20 @@ public class ClienteService {
         cliente.getContatos().add(contato);
         return cliente;
     }
+
+    // Método para adicionar uma nova venda ao cliente
+ /*   public Cliente addVenda(Long clienteId, Vendas vendas) {
+        Cliente cliente = findById(clienteId);
+        vendas.setCliente(cliente); // Associar a venda ao cliente
+        cliente.getVendas().add(vendas); // Adicionar a venda à lista de vendas do cliente
+        repository.save(cliente); // Salvar o cliente (e suas vendas)
+        return cliente;
+    }
+
+    // Método para listar todas as vendas de um cliente
+    public List<Vendas> findVendasByClienteId(Long clienteId) {
+        Cliente cliente = findById(clienteId);
+        return cliente.getVendas(); // Retorna a lista de vendas do cliente
+    }*/
 }
+

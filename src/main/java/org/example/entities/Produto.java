@@ -1,10 +1,11 @@
 package org.example.entities;
 
-import org.example.repositories.FornecedorRepository;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -64,6 +65,9 @@ public class Produto implements Serializable {
 
     @Column(name = "PRO_DATAATUALIZACAO")
     private LocalDateTime proDataAtualizacao;
+
+ /*   @OneToMany(mappedBy = "PRODUTOVENDA", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProdutoVenda> produtosVendas = new ArrayList<>();*/
 
     public Produto() {
     }
@@ -187,4 +191,12 @@ public class Produto implements Serializable {
     public void setProDataAtualizacao(LocalDateTime proDataAtualizacao) {
         this.proDataAtualizacao = proDataAtualizacao;
     }
+
+  /*  public List<ProdutoVenda> getProdutosVendas() {
+        return produtosVendas;
+    }
+
+    public void setProdutosVendas(List<ProdutoVenda> produtosVendas) {
+        this.produtosVendas = produtosVendas;
+    }*/
 }
