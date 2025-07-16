@@ -1,13 +1,5 @@
 package org.example.DTO;
 
-import org.hibernate.validator.constraints.br.CPF;
-
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 public class FornecedorDTO {
 
@@ -15,6 +7,8 @@ public class FornecedorDTO {
     private String forNomeFantasia;
     private String forCnpj;
     private String forRazaoSocial;
+
+    private String conEmail;
 
     private String endRua;
     private String endNumero;
@@ -25,7 +19,6 @@ public class FornecedorDTO {
 
     private String conCelular;
     private String conTelefoneComercial;
-    private String conEmail;
 
     public FornecedorDTO() {
     }

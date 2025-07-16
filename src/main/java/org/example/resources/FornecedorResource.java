@@ -36,7 +36,6 @@ public class FornecedorResource {
         Fornecedor createdFornecedor = fornecedorService.insert(fornecedorDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdFornecedor);
     }
-
     @PutMapping("/{id}")
     public ResponseEntity<Fornecedor> update(@PathVariable Long id, @RequestBody FornecedorDTO fornecedorDto) {
         try {
@@ -49,7 +48,7 @@ public class FornecedorResource {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        fornecedorService.deleteFornecedor(id);
+        fornecedorService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

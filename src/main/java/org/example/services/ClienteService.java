@@ -6,8 +6,6 @@ import org.example.entities.Contato;
 import org.example.entities.Endereco;
 import org.example.entities.Vendas; // Importar a entidade Venda
 import org.example.repositories.ClienteRepository;
-import org.example.repositories.ContatoRepository;
-import org.example.repositories.EnderecoRepository;
 import org.example.services.exeptions.ResourceNotFoundException;
 import org.example.services.exeptions.ValueBigForAtributeException;
 import org.springframework.beans.factory.annotation.Autowired;
