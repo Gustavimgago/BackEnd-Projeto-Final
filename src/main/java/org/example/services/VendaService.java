@@ -1,16 +1,5 @@
 package org.example.services;
 
-import org.example.DTO.VendasDTO;
-import org.example.entities.Vendas;
-import org.example.entities.Cliente;
-import org.example.entities.ProdutoVenda;
-import org.example.repositories.VendasRepository;
-import org.example.services.exeptions.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
 //@Service
 public class VendasService {/*
 
