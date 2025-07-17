@@ -2,9 +2,8 @@ package org.example.resources;
 
 import org.example.DTO.ClienteDTO;
 import org.example.entities.Cliente;
-import org.example.entities.Vendas;
+import org.example.entities.Venda;
 import org.example.services.ClienteService;
-import org.example.services.VendasService;
 import org.example.services.exeptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

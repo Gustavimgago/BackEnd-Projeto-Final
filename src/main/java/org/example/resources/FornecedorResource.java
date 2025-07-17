@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -32,12 +33,13 @@ public class FornecedorResource {
     }
 
     @PostMapping
-    public ResponseEntity<Fornecedor> insert(@RequestBody FornecedorDTO fornecedorDTO) {
+    public ResponseEntity<Fornecedor> insert(@Valid @RequestBody FornecedorDTO fornecedorDTO) {
         Fornecedor createdFornecedor = fornecedorService.insert(fornecedorDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdFornecedor);
     }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Fornecedor> update(@PathVariable Long id, @RequestBody FornecedorDTO fornecedorDto) {
+    public ResponseEntity<Fornecedor> update(@PathVariable Long id, @Valid @RequestBody FornecedorDTO fornecedorDto) {
         try {
             Fornecedor updatedFornecedor = fornecedorService.update(id, fornecedorDto);
             return ResponseEntity.ok(updatedFornecedor);
@@ -48,7 +50,12 @@ public class FornecedorResource {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        fornecedorService.delete(id);
-        return ResponseEntity.noContent().build();
+        try {
+            fornecedorService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
+

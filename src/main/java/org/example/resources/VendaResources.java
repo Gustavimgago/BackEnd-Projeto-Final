@@ -1,8 +1,7 @@
 package org.example.resources;
 
-import org.example.entities.ProdutoVenda;
-import org.example.entities.Vendas;
-import org.example.services.VendasService;
+import org.example.entities.Venda;
+import org.example.services.VendaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,51 +12,41 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping(value = "/vendas")
-
-public class VendasResources {/*
+public class VendaResources {
 
     @Autowired
-    private VendasService vendasService;
+    private VendaService vendaService;
 
-    // Listar todas as vendas
     @GetMapping
-    public ResponseEntity<List<Vendas>> findAll() {
-        List<Vendas> vendas = vendasService.findAll();
+    public ResponseEntity<List<Venda>> getAll() {
+        List<Venda> vendas = vendaService.getAll();
         return ResponseEntity.ok(vendas);
     }
 
-    // Buscar venda por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Vendas> findById(@PathVariable Long id) {
-        Vendas venda = vendasService.findById(id);
+    public ResponseEntity<Venda> findById(@PathVariable Long id) {
+        Venda venda = vendaService.findById(id);
         return ResponseEntity.ok(venda);
     }
 
-    // Criar nova venda
     @PostMapping
-    public ResponseEntity<Vendas> insert(@RequestBody Vendas vendas) {
-        Vendas novaVenda = vendasService.insert(vendas);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novaVenda);
+    public ResponseEntity<Venda> insert(@RequestBody Venda venda) {
+        Venda createdVenda = vendaService.insert(venda);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdVenda);
     }
 
-    // Atualizar venda
     @PutMapping("/{id}")
-    public ResponseEntity<Vendas> update(@PathVariable Long id, @RequestBody Vendas vendas) {
-        Vendas vendaAtualizada = vendasService.update(id, vendas);
-        return ResponseEntity.ok(vendaAtualizada);
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Venda venda) {
+        if (vendaService.update(id, venda)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // Deletar venda
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        vendasService.delete(id);
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        vendaService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
-    // Listar produtos de uma venda específica
-    @GetMapping("/{id}/produtos")
-    public ResponseEntity<List<ProdutoVenda>> getProdutosDaVenda(@PathVariable Long id) {
-        List<ProdutoVenda> produtos = vendasService.getProdutosDaVenda(id);
-        return ResponseEntity.ok(produtos);
-    }*/
 }
