@@ -15,12 +15,8 @@ import java.util.Optional;
 
 @Service
 public class ProdutoService {
-
     @Autowired
     private ProdutoRepository repository;
-
-    @Autowired
-    private FornecedorRepository fornecedorRepository;
 
     public List<Produto> getAll() {
         return repository.findAll();
@@ -32,13 +28,6 @@ public class ProdutoService {
     }
 
     public Produto insert(Produto produto) {
-        if (produto.getFornecedor() == null || produto.getFornecedor().getForId() == null) {
-            throw new IllegalArgumentException("Fornecedor não pode ser nulo");
-        }
-        Fornecedor fornecedor = fornecedorRepository.findById(produto.getFornecedor().getForId())
-                .orElseThrow(() -> new ResourceNotFoundException(produto.getFornecedor().getForId()));
-
-        produto.setFornecedor(fornecedor); // Atribuindo o fornecedor encontrado
         return repository.save(produto);
     }
 
@@ -46,16 +35,17 @@ public class ProdutoService {
         Optional<Produto> optionalProduto = repository.findById(id);
         if (optionalProduto.isPresent()) {
             Produto produtoSistema = optionalProduto.get();
+            produtoSistema.setFornecedor(produto.getFornecedor());
             produtoSistema.setProNome(produto.getProNome());
             produtoSistema.setProPrecoCusto(produto.getProPrecoCusto());
             produtoSistema.setProPrecoVenda(produto.getProPrecoVenda());
+            produtoSistema.setProStatus(produto.getProStatus());
             produtoSistema.setProDescricao(produto.getProDescricao());
             produtoSistema.setProQuantidadeStock(produto.getProQuantidadeStock());
-            produtoSistema.setProStatus(produto.getProStatus());
-
-            Fornecedor fornecedor = fornecedorRepository.findById(produto.getFornecedor().getForId())
-                    .orElseThrow(() -> new ResourceNotFoundException(produto.getFornecedor().getForId()));
-            produtoSistema.setFornecedor(fornecedor);
+            produtoSistema.setFornecedor(produto.getFornecedor());
+            produtoSistema.setProCategoria(produto.getProCategoria());
+            produtoSistema.setProCodigoBarras(produto.getProCodigoBarras());
+            produtoSistema.setProMarca(produto.getProMarca());
 
             repository.save(produtoSistema);
             return true;

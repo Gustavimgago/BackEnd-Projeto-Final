@@ -96,11 +96,10 @@ public class FornecedorService {
                 objDto.getEndCidade(), objDto.getEndCep(), objDto.getEndEstado());
         Contato contato = new Contato(null, fornecedor, objDto.getConCelular(), objDto.getConTelefoneComercial(),
                 objDto.getConEmail());
-
         fornecedor.getEnderecos().add(endereco);
         fornecedor.getContatos().add(contato);
-
         return fornecedor;
     }
 }
+
 

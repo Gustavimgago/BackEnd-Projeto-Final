@@ -26,6 +26,11 @@ public class Contato implements Serializable {
     @JoinColumn(name = "CON_FOR_ID")
     private Fornecedor conFornecedor;
 
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "CON_FUN_ID")
+    private Funcionario conFuncionario;
+
     @NotBlank
     @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Número de celular inválido")
     @Column(name = "CON_CELULAR", length = 20)
@@ -35,14 +40,14 @@ public class Contato implements Serializable {
     @Column(name = "CON_TELEFONE_COMERCIAL", length = 20)
     private String conTelefoneComercial;
 
-    @Email (message = "Email inválido")
+    @Email(message = "Email inválido")
     @Column(length = 55, name = "CON_EMAIL")
     private String conEmail;
 
     public Contato() {
     }
 
-    public Contato(Long conId, Cliente cliente ,String conCelular, String conTelefoneComercial, String conEmail) {
+    public Contato(Long conId, Cliente cliente, String conCelular, String conTelefoneComercial, String conEmail) {
         this.conId = conId;
         this.conCliente = cliente;
         this.conCelular = conCelular;
@@ -50,9 +55,17 @@ public class Contato implements Serializable {
         this.conEmail = conEmail;
     }
 
-    public Contato(Long conId, Fornecedor fornecedor ,String conCelular, String conTelefoneComercial, String conEmail) {
+    public Contato(Long conId, Fornecedor fornecedor, String conCelular, String conTelefoneComercial, String conEmail) {
         this.conId = conId;
         this.conFornecedor = fornecedor;
+        this.conCelular = conCelular;
+        this.conTelefoneComercial = conTelefoneComercial;
+        this.conEmail = conEmail;
+    }
+
+    public Contato(Long conId, Funcionario conFuncionario, String conCelular, String conTelefoneComercial, String conEmail) {
+        this.conId = conId;
+        this.conFuncionario = conFuncionario;
         this.conCelular = conCelular;
         this.conTelefoneComercial = conTelefoneComercial;
         this.conEmail = conEmail;
@@ -74,12 +87,20 @@ public class Contato implements Serializable {
         this.conCliente = conCliente;
     }
 
-    public Fornecedor getContFornecedor() {
+    public Fornecedor getConFornecedor() {
         return conFornecedor;
     }
 
-    public void setContFornecedor(Fornecedor contFornecedor) {
-        this.conFornecedor = contFornecedor;
+    public void setConFornecedor(Fornecedor conFornecedor) {
+        this.conFornecedor = conFornecedor;
+    }
+
+    public Funcionario getConFuncionario() {
+        return conFuncionario;
+    }
+
+    public void setConFuncionario(Funcionario conFuncionario) {
+        this.conFuncionario = conFuncionario;
     }
 
     public String getConCelular() {

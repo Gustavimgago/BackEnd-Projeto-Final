@@ -63,8 +63,6 @@ public class Produto implements Serializable {
     @Column(name = "PRO_DATACADASTRO")
     private LocalDateTime proDataCadastro;
 
-    @Column(name = "PRO_DATAATUALIZACAO")
-    private LocalDateTime proDataAtualizacao;
 
  /*   @OneToMany(mappedBy = "PRODUTOVENDA", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProdutoVenda> produtosVendas = new ArrayList<>();*/
@@ -72,7 +70,7 @@ public class Produto implements Serializable {
     public Produto() {
     }
 
-    public Produto(Long proId, Fornecedor fornecedor, String proNome, Double proPrecoCusto, Double proPrecoVenda, String proDescricao, int proQuantidadeStock, String proStatus, String proCategoria, String proCodigoBarras, String proMarca, LocalDateTime proDataCadastro, LocalDateTime proDataAtualizacao) {
+    public Produto(Long proId, Fornecedor fornecedor, String proNome, Double proPrecoCusto, Double proPrecoVenda, String proDescricao, int proQuantidadeStock, String proStatus, String proCategoria, String proCodigoBarras, String proMarca, LocalDateTime proDataCadastro) {
         this.proId = proId;
         this.fornecedor = fornecedor;
         this.proNome = proNome;
@@ -85,7 +83,6 @@ public class Produto implements Serializable {
         this.proCodigoBarras = proCodigoBarras;
         this.proMarca = proMarca;
         this.proDataCadastro = proDataCadastro;
-        this.proDataAtualizacao = proDataAtualizacao;
     }
 
     public Long getProId() {
@@ -184,19 +181,5 @@ public class Produto implements Serializable {
         this.proDataCadastro = proDataCadastro;
     }
 
-    public LocalDateTime getProDataAtualizacao() {
-        return proDataAtualizacao;
-    }
 
-    public void setProDataAtualizacao(LocalDateTime proDataAtualizacao) {
-        this.proDataAtualizacao = proDataAtualizacao;
-    }
-
-  /*  public List<ProdutoVenda> getProdutosVendas() {
-        return produtosVendas;
-    }
-
-    public void setProdutosVendas(List<ProdutoVenda> produtosVendas) {
-        this.produtosVendas = produtosVendas;
-    }*/
 }

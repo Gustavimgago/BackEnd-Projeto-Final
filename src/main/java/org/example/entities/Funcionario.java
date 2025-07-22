@@ -1,9 +1,14 @@
 package org.example.entities;
 
+import org.hibernate.validator.constraints.br.CPF;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class Funcionario implements Serializable {
 
@@ -11,6 +16,12 @@ public class Funcionario implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "FUNC_ID")
     private Long funciId;
+
+    @OneToMany(mappedBy = "endFuncionario", cascade = CascadeType.ALL)
+    private List<Endereco> enderecos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "conFuncionario", cascade = CascadeType.ALL)
+    private List<Contato> contatos = new ArrayList<>();
 
     @NotBlank(message = "Nome é obrigatório")
     @Size(max = 100, message = "Nome do funcionario deve ter no máximo 100 caracteres")
@@ -22,25 +33,20 @@ public class Funcionario implements Serializable {
     @Column(name = "FUNCI_CARGO", nullable = false, length = 100)
     private String funciCargo;
 
-    @NotBlank(message = "O email é obrigatório")
-    @Size(max = 100, message = "O email deve ter no máximo 100 caracteres")
-    @Column(name = "FUNCI_EMAIL", nullable = false, length = 100)
-    private String funciEmail;
+    @NotBlank(message = "CPF é obrigatório")
+    @CPF(message = "CPF inválido")
+    @Column(name = "FUNCI_CPF", nullable = false, unique = true, length = 15)
+    private String funciCpf;
 
-    @NotBlank(message = "Telefone é obrigatório")
-    @Size(max = 100, message = "O telefone deve ter no máximo 100 caracteres")
-    @Column(name = "FUNCI_TELEFONE", nullable = false, length = 100)
-    private String funciTelefone;
 
     public Funcionario() {
     }
 
-    public Funcionario(Long funciId, String funciNome, String funciCargo, String funciEmail, String funciTelefone) {
+    public Funcionario(Long funciId, String funciNome, String funciCargo, String funciCpf) {
         this.funciId = funciId;
         this.funciNome = funciNome;
         this.funciCargo = funciCargo;
-        this.funciEmail = funciEmail;
-        this.funciTelefone = funciTelefone;
+        this.funciCpf = funciCpf;
     }
 
     public Long getFunciId() {
@@ -49,6 +55,22 @@ public class Funcionario implements Serializable {
 
     public void setFunciId(Long funciId) {
         this.funciId = funciId;
+    }
+
+    public List<Endereco> getEnderecos() {
+        return enderecos;
+    }
+
+    public void setEnderecos(List<Endereco> enderecos) {
+        this.enderecos = enderecos;
+    }
+
+    public List<Contato> getContatos() {
+        return contatos;
+    }
+
+    public void setContatos(List<Contato> contatos) {
+        this.contatos = contatos;
     }
 
     public String getFunciNome() {
@@ -67,19 +89,11 @@ public class Funcionario implements Serializable {
         this.funciCargo = funciCargo;
     }
 
-    public String getFunciEmail() {
-        return funciEmail;
+    public String getFunciCpf() {
+        return funciCpf;
     }
 
-    public void setFunciEmail(String funciEmail) {
-        this.funciEmail = funciEmail;
-    }
-
-    public String getFunciTelefone() {
-        return funciTelefone;
-    }
-
-    public void setFunciTelefone(String funciTelefone) {
-        this.funciTelefone = funciTelefone;
+    public void setFunciCpf(String funciCpf) {
+        this.funciCpf = funciCpf;
     }
 }
