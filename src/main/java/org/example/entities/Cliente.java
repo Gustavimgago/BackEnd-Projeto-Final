@@ -24,9 +24,6 @@ public class Cliente implements Serializable {
     @OneToMany(mappedBy = "conCliente", cascade = CascadeType.ALL)
     private List<Contato> contatos = new ArrayList<>();
 
-/*   @OneToMany(mappedBy = "VenCliente", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Vendas> vendas = new ArrayList<>(); */
-
     @NotBlank(message = "Nome é obrigatório")
     @Size(max = 100, message = "Nome deve ter no máximo 100 caracteres")
     @Column(name = "CLI_NOME", nullable = false, length = 100)

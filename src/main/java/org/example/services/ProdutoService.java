@@ -42,7 +42,6 @@ public class ProdutoService {
             produtoSistema.setProStatus(produto.getProStatus());
             produtoSistema.setProDescricao(produto.getProDescricao());
             produtoSistema.setProQuantidadeStock(produto.getProQuantidadeStock());
-            produtoSistema.setFornecedor(produto.getFornecedor());
             produtoSistema.setProCategoria(produto.getProCategoria());
             produtoSistema.setProCodigoBarras(produto.getProCodigoBarras());
             produtoSistema.setProMarca(produto.getProMarca());
@@ -54,6 +53,14 @@ public class ProdutoService {
     }
 
     public void delete(Long id) {
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException(id);
+        }
         repository.deleteById(id);
     }
+
+    public Page<Produto> getAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
 }
+
