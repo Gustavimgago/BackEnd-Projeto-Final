@@ -90,16 +90,21 @@ public class FornecedorService {
         repository.deleteById(id);
     }
 
-    public Fornecedor fromDTO(FornecedorDTO objDto) {
-        Fornecedor fornecedor = new Fornecedor(null, objDto.getForNomeFantasia(), objDto.getForCnpj(), objDto.getForRazaoSocial());
-        Endereco endereco = new Endereco(null, fornecedor, objDto.getEndRua(), objDto.getEndNumero(),
-                objDto.getEndCidade(), objDto.getEndCep(), objDto.getEndEstado());
-        Contato contato = new Contato(null, fornecedor, objDto.getConCelular(), objDto.getConTelefoneComercial(),
-                objDto.getConEmail());
+    public Fornecedor fromDTO(FornecedorDTO dto) {
+        Fornecedor fornecedor = new Fornecedor(null, dto.getForNomeFantasia(), dto.getForCnpj(), dto.getForRazaoSocial());
+
+        Endereco endereco = new Endereco(null, fornecedor, dto.getEndRua(), dto.getEndNumero(),
+                dto.getEndCidade(), dto.getEndCep(), dto.getEndEstado());
+
+        Contato contato = new Contato(null, fornecedor, dto.getConCelular(),
+                dto.getConTelefoneComercial(), dto.getConEmail());
+
         fornecedor.getEnderecos().add(endereco);
         fornecedor.getContatos().add(contato);
+
         return fornecedor;
     }
+
 }
 
 
