@@ -1,15 +1,8 @@
 package org.example.entities;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.aspectj.apache.bcel.classfile.NestMembers;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Venda {
@@ -18,40 +11,30 @@ public class Venda {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "VND_ID")
     private Long vndId;
-
-
-    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<ItemVenda> itens = new ArrayList<>();
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "FPG_ID", nullable = false)
-    private FormaPagamento formaPagamento;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "FUN_ID", nullable = false)
-    private Funcionario funcionario;
-
     @ManyToOne(optional = false)
     @JoinColumn(name = "CLI_ID", nullable = false)
     private Cliente cliente;
-
-    @Column(name = "VND_DATAVENDA")
-    private LocalDateTime vndDataVenda;
-
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "FUN_ID", nullable = false)
+    private Funcionario funcionario;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "FPG_ID", nullable = false)
+    private FormaPagamento formaPagamento;
+    @Column(name = "VND_DATA", nullable = false)
+    private LocalDateTime vndData = LocalDateTime.now(); // Data atual automática
     @Column(name = "VND_TOTAL", nullable = false)
-    private double vndTotal;
-
-    @NotNull(message = "Status da venda é obrigatório!")
-    @Column(name = "VND_CONCLUIDA", nullable = false)
-    private Boolean vndConcluida;
-
-    @Size(max = 200, message = "Observações deve ter no máximo 200 caracteres!")
-    @Column(name = "VND_OBSERVACAO", length = 200)
-    private String vndObservacao;
-
+    private Double vndTotal;
+    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemVenda> itens;
 
     public Venda() {
+    }
+
+    public Venda(Long vndId, LocalDateTime vndData, Double vndTotal) {
+        this.vndId = vndId;
+        this.vndData = vndData;
+        this.vndTotal = vndTotal;
+
     }
 
     public Long getVndId() {
@@ -62,20 +45,12 @@ public class Venda {
         this.vndId = vndId;
     }
 
-    public List<ItemVenda> getItens() {
-        return itens;
+    public Cliente getCliente() {
+        return cliente;
     }
 
-    public void setItens(List<ItemVenda> itens) {
-        this.itens = itens;
-    }
-
-    public FormaPagamento getFormaPagamento() {
-        return formaPagamento;
-    }
-
-    public void setFormaPagamento(FormaPagamento formaPagamento) {
-        this.formaPagamento = formaPagamento;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
     public Funcionario getFuncionario() {
@@ -86,43 +61,35 @@ public class Venda {
         this.funcionario = funcionario;
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public FormaPagamento getFormaPagamento() {
+        return formaPagamento;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setFormaPagamento(FormaPagamento formaPagamento) {
+        this.formaPagamento = formaPagamento;
     }
 
-    public LocalDateTime getVndDataVenda() {
-        return vndDataVenda;
+    public LocalDateTime getVndData() {
+        return vndData;
     }
 
-    public void setVndDataVenda(LocalDateTime vndDataVenda) {
-        this.vndDataVenda = vndDataVenda;
+    public void setVndData(LocalDateTime vndData) {
+        this.vndData = vndData;
     }
 
-    public double getVndTotal() {
+    public Double getVndTotal() {
         return vndTotal;
     }
 
-    public void setVndTotal(double vndTotal) {
+    public void setVndTotal(Double vndTotal) {
         this.vndTotal = vndTotal;
     }
 
-    public Boolean getVndConcluida() {
-        return vndConcluida;
+    public List<ItemVenda> getItens() {
+        return itens;
     }
 
-    public void setVndConcluida(Boolean vndConcluida) {
-        this.vndConcluida = vndConcluida;
-    }
-
-    public String getVndObservacao() {
-        return vndObservacao;
-    }
-
-    public void setVndObservacao(String vndObservacao) {
-        this.vndObservacao = vndObservacao;
+    public void setItens(List<ItemVenda> itens) {
+        this.itens = itens;
     }
 }

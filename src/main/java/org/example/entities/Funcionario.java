@@ -14,7 +14,7 @@ public class Funcionario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "FUNC_ID")
+    @Column(name = "FUNCI_ID")
     private Long funciId;
 
     @OneToMany(mappedBy = "endFuncionario", cascade = CascadeType.ALL)

@@ -1,10 +1,9 @@
 package org.example.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import javax.persistence.*;
 
 @Entity
+@Table(name = "TB_ITEM_VENDA")
 public class ItemVenda {
 
     @Id
@@ -18,20 +17,25 @@ public class ItemVenda {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "VND_ID", nullable = false)
-    @JsonBackReference
     private Venda venda;
 
     @Column(name = "IVD_QUANTIDADE", nullable = false)
-    private int ivdQuantidade;
+    private Integer quantidade;
 
-    @Column(name = "IVD_PRECOUNITARIO", nullable = false)
-    private double ivdPrecoUnitario;
+    @Column(name = "IVD_PRECO_UNITARIO", nullable = false)
+    private Double precoUnitario;
 
     @Column(name = "IVD_SUBTOTAL", nullable = false)
-    private double ivdSubtotal;
-
+    private Double subTotal;
 
     public ItemVenda() {
+    }
+
+    public ItemVenda(Long ivdId, Integer quantidade, Double precoUnitario, Double subTotal) {
+        this.ivdId = ivdId;
+        this.quantidade = quantidade;
+        this.precoUnitario = precoUnitario;
+        this.subTotal = subTotal;
     }
 
     public Long getIvdId() {
@@ -58,27 +62,27 @@ public class ItemVenda {
         this.venda = venda;
     }
 
-    public int getIvdQuantidade() {
-        return ivdQuantidade;
+    public Integer getQuantidade() {
+        return quantidade;
     }
 
-    public void setIvdQuantidade(int ivdQuantidade) {
-        this.ivdQuantidade = ivdQuantidade;
+    public void setQuantidade(Integer quantidade) {
+        this.quantidade = quantidade;
     }
 
-    public double getIvdPrecoUnitario() {
-        return ivdPrecoUnitario;
+    public Double getPrecoUnitario() {
+        return precoUnitario;
     }
 
-    public void setIvdPrecoUnitario(double ivdPrecoUnitario) {
-        this.ivdPrecoUnitario = ivdPrecoUnitario;
+    public void setPrecoUnitario(Double precoUnitario) {
+        this.precoUnitario = precoUnitario;
     }
 
-    public double getIvdSubtotal() {
-        return ivdSubtotal;
+    public Double getSubTotal() {
+        return subTotal;
     }
 
-    public void setIvdSubtotal(double ivdSubtotal) {
-        this.ivdSubtotal = ivdSubtotal;
+    public void setSubTotal(Double subTotal) {
+        this.subTotal = subTotal;
     }
 }

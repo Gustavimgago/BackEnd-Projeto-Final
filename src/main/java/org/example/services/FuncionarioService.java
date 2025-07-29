@@ -32,11 +32,17 @@ public class FuncionarioService {
 
     public Funcionario update(Long id, FuncionarioDTO objDto) {
         Funcionario entity = findById(id);
+
+        // Validação dos dados do DTO
+        if (objDto.getFunciNome() == null || objDto.getFunciNome().isEmpty()) {
+            throw new IllegalArgumentException("Nome do funcionário não pode ser vazio");
+        }
+
         entity.setFunciNome(objDto.getFunciNome());
         entity.setFunciCargo(objDto.getFunciCargo());
         entity.setFunciCpf(objDto.getFunciCpf());
 
-        // Atualiza o primeiro endereço, se existir
+        // Atualiza ou adiciona endereço
         if (!entity.getEnderecos().isEmpty()) {
             Endereco endereco = entity.getEnderecos().get(0);
             endereco.setEndRua(objDto.getEndRua());
@@ -45,32 +51,28 @@ public class FuncionarioService {
             endereco.setEndCep(objDto.getEndCep());
             endereco.setEndEstado(objDto.getEndEstado());
         } else {
-            // Adiciona um novo endereço se não houver
             Endereco novoEndereco = new Endereco(null, entity, objDto.getEndRua(), objDto.getEndNumero(),
                     objDto.getEndCidade(), objDto.getEndCep(), objDto.getEndEstado());
             entity.getEnderecos().add(novoEndereco);
         }
 
-        // Atualiza o primeiro contato, se existir
+        // Atualiza ou adiciona contato
         if (!entity.getContatos().isEmpty()) {
             Contato contato = entity.getContatos().get(0);
             contato.setConCelular(objDto.getConCelular());
             contato.setConTelefoneComercial(objDto.getConTelefoneComercial());
             contato.setConEmail(objDto.getConEmail());
         } else {
-            // Adiciona um novo contato se não houver
             Contato novoContato = new Contato(null, entity, objDto.getConCelular(),
                     objDto.getConTelefoneComercial(), objDto.getConEmail());
             entity.getContatos().add(novoContato);
         }
 
-        return repository.save(entity); // Salva as alterações e retorna a entidade atualizada
+        return repository.save(entity);
     }
 
+
     public void delete(Long id) {
-        if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException(id); // Lança exceção se o funcionário não existir
-        }
         repository.deleteById(id);
     }
 

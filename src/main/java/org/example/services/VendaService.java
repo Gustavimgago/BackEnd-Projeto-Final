@@ -1,17 +1,10 @@
 package org.example.services;
 
-import org.example.entities.ItemVenda;
-import org.example.entities.Produto;
-import org.example.entities.Venda;
-import org.example.repositories.ClienteRepository;
-import org.example.repositories.FuncionarioRepository;
-import org.example.repositories.FormaPagamentoRepository;
-import org.example.repositories.ProdutoRepository;
-import org.example.repositories.VendaRepository;
+import org.example.entities.*;
+import org.example.repositories.*;
 import org.example.services.exeptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -20,158 +13,64 @@ import java.util.Optional;
 public class VendaService {
 
     @Autowired
-    private ProdutoRepository produtoRepository;
-
-    @Autowired
     private VendaRepository repository;
 
     @Autowired
-    private ClienteRepository clienteRepository;
+    private ProdutoRepository produtoRepository;
 
-    @Autowired
-    private FuncionarioRepository funcionarioRepository;
-
-    @Autowired
-    private FormaPagamentoRepository formaPagamentoRepository;
-
-    // Buscar todas as vendas
-    public List<Venda> getAll() {
-        return repository.findAll();
-    }
-
-    // Buscar venda por id
-    public Venda findById(Long id) {
-        Optional<Venda> obj = repository.findById(id);
-        return obj.orElseThrow(() -> new ResourceNotFoundException(id));
-    }
-
+    // Cria uma venda com cálculo automático de totais
     @Transactional
     public Venda insert(Venda venda) {
-        // mesma lógica de insert que já tem...
-        for (ItemVenda item : venda.getItens()) {
-            item.setVenda(venda);
+        // Calcula subtotal e valida estoque para cada item
+        venda.getItens().forEach(item -> {
+            Produto produto = produtoRepository.findById(item.getProduto().getProId())
+                    .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
-            Long proId = item.getProduto().getProId();
-            Produto produto = produtoRepository.findById(proId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado: " + proId));
-
-            int estoqueAtual = produto.getProQuantidadeStock();
-            int novaQuantidade = estoqueAtual - item.getIvdQuantidade();
-
-            if (novaQuantidade < 0) {
-                throw new RuntimeException("Estoque insuficiente para o produto: " + produto.getProId());
+            if (produto.getProQuantidadeStock() < item.getQuantidade()) {
+                throw new RuntimeException("Estoque insuficiente para o produto: " + produto.getProNome());
             }
 
-            produto.setProQuantidadeStock(novaQuantidade);
+            // Atualiza estoque
+            produto.setProQuantidadeStock(produto.getProQuantidadeStock() - item.getQuantidade());
             produtoRepository.save(produto);
 
-            item.setProduto(produto);
+            // Calcula valores
+            item.setPrecoUnitario(produto.getProPrecoVenda());
+            item.setSubTotal(item.getQuantidade() * produto.getProPrecoVenda());
+        });
 
-            double precoUnitario = produto.getProPrecoVenda();
-            item.setIvdPrecoUnitario(precoUnitario);
-
-            double subtotal = precoUnitario * item.getIvdQuantidade();
-            item.setIvdSubtotal(subtotal);
-        }
-
-        double total = venda.getItens().stream()
-                .mapToDouble(ItemVenda::getIvdSubtotal)
+        // Calcula total da venda
+        Double total = venda.getItens().stream()
+                .mapToDouble(ItemVenda::getSubTotal)
                 .sum();
         venda.setVndTotal(total);
 
         return repository.save(venda);
     }
 
-    @Transactional
-    public boolean update(Long id, Venda venda) {
-        Optional<Venda> optionalVenda = repository.findById(id);
-        if (!optionalVenda.isPresent()) {
-            return false;
-        }
-        Venda vendaSistema = optionalVenda.get();
-
-        // 1. Devolver ao estoque as quantidades dos itens antigos
-        for (ItemVenda itemAntigo : vendaSistema.getItens()) {
-            Produto produtoAntigo = produtoRepository.findById(itemAntigo.getProduto().getProId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado: " + itemAntigo.getProduto().getProId()));
-
-            int novoEstoque = produtoAntigo.getProQuantidadeStock() + itemAntigo.getIvdQuantidade();
-            produtoAntigo.setProQuantidadeStock(novoEstoque);
-            produtoRepository.save(produtoAntigo);
-        }
-
-        // Carregar entidades relacionadas do banco para garantir que são gerenciadas
-        var cliente = clienteRepository.findById(venda.getCliente().getCliId())
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
-        var funcionario = funcionarioRepository.findById(venda.getFuncionario().getFunciId())
-                .orElseThrow(() -> new ResourceNotFoundException("Funcionario não encontrado"));
-        var formaPagamento = formaPagamentoRepository.findById(venda.getFormaPagamento().getFpgId())
-                .orElseThrow(() -> new ResourceNotFoundException("FormaPagamento não encontrado"));
-
-        // Atualizar os campos básicos da venda
-        vendaSistema.setCliente(cliente);
-        vendaSistema.setFuncionario(funcionario);
-        vendaSistema.setFormaPagamento(formaPagamento);
-        vendaSistema.setVndDataVenda(venda.getVndDataVenda());
-        vendaSistema.setVndConcluida(venda.getVndConcluida());
-        vendaSistema.setVndObservacao(venda.getVndObservacao());
-
-        // Limpar itens antigos para evitar problemas com orphanRemoval
-        vendaSistema.getItens().clear();
-
-        // 2. Atualizar os itens da venda e descontar estoque dos produtos novos
-        for (ItemVenda item : venda.getItens()) {
-            item.setVenda(vendaSistema);
-
-            Long proId = item.getProduto().getProId();
-            Produto produto = produtoRepository.findById(proId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado: " + proId));
-
-            int novoEstoque = produto.getProQuantidadeStock() - item.getIvdQuantidade();
-            if (novoEstoque < 0) {
-                throw new RuntimeException("Estoque insuficiente para o produto: " + produto.getProId());
-            }
-            produto.setProQuantidadeStock(novoEstoque);
-            produtoRepository.save(produto);
-
-            item.setProduto(produto);
-
-            double precoUnitario = produto.getProPrecoVenda();
-            item.setIvdPrecoUnitario(precoUnitario);
-
-            double subtotal = precoUnitario * item.getIvdQuantidade();
-            item.setIvdSubtotal(subtotal);
-
-            vendaSistema.getItens().add(item);
-        }
-
-        // Recalcula o total da venda somando os subtotais
-        double total = vendaSistema.getItens().stream()
-                .mapToDouble(ItemVenda::getIvdSubtotal)
-                .sum();
-        vendaSistema.setVndTotal(total);
-
-        repository.save(vendaSistema);
-        return true;
+    // Lista todas as vendas
+    public List<Venda> getAll() {
+        return repository.findAll();
     }
 
-    // Deletar venda por id
+    // Busca venda por ID
+    public Venda findById(Long id) {
+        Optional<Venda> obj = repository.findById(id);
+        return obj.orElseThrow(() -> new ResourceNotFoundException(id));
+    }
+
+    // Deleta uma venda (com tratamento de estoque)
     @Transactional
     public void delete(Long id) {
-        Venda venda = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Venda não encontrada com ID: " + id));
+        Venda venda = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
 
-        // 1. Devolver o estoque dos produtos
-        for (ItemVenda item : venda.getItens()) {
-            Produto produto = produtoRepository.findById(item.getProduto().getProId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado: " + item.getProduto().getProId()));
-
-            int novoEstoque = produto.getProQuantidadeStock() + item.getIvdQuantidade();
-            produto.setProQuantidadeStock(novoEstoque);
+        // Devolve os produtos ao estoque
+        venda.getItens().forEach(item -> {
+            Produto produto = produtoRepository.findById(item.getProduto().getProId()).get();
+            produto.setProQuantidadeStock(produto.getProQuantidadeStock() + item.getQuantidade());
             produtoRepository.save(produto);
-        }
+        });
 
-        // 2. Excluir a venda
         repository.deleteById(id);
     }
 }

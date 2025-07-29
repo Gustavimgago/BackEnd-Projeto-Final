@@ -68,14 +68,6 @@ public class Cliente implements Serializable {
         this.contatos = contatos;
     }
 
-  /* public List<Vendas> getVendas() {
-       return vendas;
-    }
-
-     public void setVendas(List<Vendas> vendas) {
-        this.vendas = vendas;
-      }*/
-
     public String getCliNome() {
         return cliNome;
     }
