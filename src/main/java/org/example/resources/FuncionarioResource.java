@@ -50,8 +50,12 @@ public class FuncionarioResource {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        funcionarioService.delete(id);
-        return ResponseEntity.noContent().build();
+        try {
+            funcionarioService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
-
 }
+

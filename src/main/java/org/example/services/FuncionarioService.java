@@ -73,6 +73,9 @@ public class FuncionarioService {
 
 
     public void delete(Long id) {
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException(id);
+        }
         repository.deleteById(id);
     }
 
